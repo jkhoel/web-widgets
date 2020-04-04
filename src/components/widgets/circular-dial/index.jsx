@@ -22,6 +22,7 @@ const Value = styled.div`
   justify-content: center;
   left: 0;
   position: absolute;
+  text-transform: uppercase;
   top: -0.5rem;
   width: 100%;
 
@@ -40,6 +41,7 @@ const Label = styled.div`
   justify-content: center;
   left: 0;
   position: absolute;
+  text-transform: uppercase;
   top: 1.5rem;
   width: 100%;
 
@@ -48,13 +50,24 @@ const Label = styled.div`
     font-size: 1rem;
     font-weight: 700;
     letter-spacing: 1px;
-    text-transform: uppercase;
+  }
+`;
+
+const LabelOnly = styled(Label)`
+  top: 0;
+
+  & h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    top: 0;
   }
 `;
 
 const Dial = styled.svg`
   height: 150px;
   position: relative;
+  transform: rotate(-175deg);
   width: 150px;
   z-index: 1000;
 
@@ -77,7 +90,7 @@ const Dial = styled.svg`
 `;
 
 /** CircularDial */
-export default function CircularDial({ value, minValue, maxValue, color, unit, label }) {
+export default function CircularDial({ value, minValue, maxValue, color, unit, label, labelOnly }) {
   const [dialValue, setDialValue] = React.useState(0);
   const [dialColor, setDialColor] = React.useState('#00ff43');
 
@@ -91,6 +104,21 @@ export default function CircularDial({ value, minValue, maxValue, color, unit, l
     setDialColor(color);
   }, [color]);
 
+  // if the labelOnly option is enabled, return a dial showing only the label
+  if (labelOnly) {
+    return (
+      <DialContainer>
+        <Dial color={dialColor} value={dialValue}>
+          <circle cx="70" cy="70" r="70" />
+          <circle cx="70" cy="70" r="70" />
+        </Dial>
+        <LabelOnly>
+          <h3>{label}</h3>
+        </LabelOnly>
+      </DialContainer>
+    );
+  }
+
   return (
     <DialContainer>
       <Dial color={dialColor} value={dialValue}>
@@ -99,7 +127,7 @@ export default function CircularDial({ value, minValue, maxValue, color, unit, l
       </Dial>
       <Value>
         <h2>
-          {dialValue}
+          {labelOnly ? null : value}
           <span>{unit}</span>
         </h2>
       </Value>
@@ -117,6 +145,7 @@ CircularDial.propTypes = {
   color: PropTypes.string,
   unit: PropTypes.string,
   label: PropTypes.string,
+  labelOnly: PropTypes.bool,
 };
 
 CircularDial.defaultProps = {
@@ -125,5 +154,6 @@ CircularDial.defaultProps = {
   maxValue: 100,
   color: '#00ff43',
   unit: '%',
-  label: 'gigaflips',
+  label: 'kevin',
+  labelOnly: false,
 };
