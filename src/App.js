@@ -7,11 +7,16 @@ import DemoDial from './components/widgets/circular-dial/examples/DemoDial';
 import StatusDial from './components/widgets/circular-dial/examples/StatusDial';
 import ClockDial from './components/widgets/circular-dial/examples/ClockDial';
 
+import DemoChart from './components/widgets/chart/examples/DemoChart';
+
 // Main App
 function App() {
   // Compose <App />
   return (
     <div className="App">
+      <header className="App-header">
+        <DemoChart />
+      </header>
       <header className="App-header">
         <CircularDial value={33} color="hotpink" />
         <DemoDial step={2} />
