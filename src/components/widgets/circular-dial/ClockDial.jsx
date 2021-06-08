@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import CircularDial from '../index';
+import CircularDial from './CircularDial';
 
 /**
  * This component demos the CircularDial used as a clock, with the ring lighting
