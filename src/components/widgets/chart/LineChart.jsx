@@ -131,15 +131,6 @@ const LineChart = ({
     });
   };
 
-  // Iterate over each point in the data and create plot coordinates
-  const points = data
-    .map((dataPoint) => {
-      const x = (dataPoint.x / maximumXFromData) * chartWidth + padding;
-      const y = chartHeight - (dataPoint.y / maximumYFromData) * chartHeight + padding;
-      return `${x}, ${y}`;
-    })
-    .join(' ');
-
   // Create lines for each data-series
   const chartSeries = data.map(({ legend, color, values }) => {
     const coords = values
@@ -172,8 +163,6 @@ const LineChart = ({
       {chartSeries.map(({ key, color, coords }) => (
         <polyline key={key} fill="none" stroke={color} strokeWidth={STROKE} points={coords} />
       ))}
-
-      <polyline fill="none" stroke={colors.line} strokeWidth={STROKE} points={points} />
     </svg>
   );
 };
