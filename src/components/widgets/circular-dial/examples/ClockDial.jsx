@@ -4,7 +4,8 @@ import moment from 'moment';
 import CircularDial from '../index';
 
 /**
- * This component demos the CircularDial used as a clock, with the ring lighting up with seconds in a minute
+ * This component demos the CircularDial used as a clock, with the ring lighting
+ * up with seconds in a minute
  */
 
 export default function ClockDial() {

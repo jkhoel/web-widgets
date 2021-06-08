@@ -3,6 +3,16 @@ import PropTypes from 'prop-types';
 
 const STROKE = 1;
 
+// Axis Component
+const Axis = ({ points }) => (
+  <polyline fill="none" stroke="#ccc" strokeWidth=".5" points={points} />
+);
+
+Axis.propTypes = {
+  points: PropTypes.string.isRequired,
+};
+
+// Main LineChart Component
 const LineChart = ({
   data,
   width,
@@ -21,11 +31,6 @@ const LineChart = ({
   // const padding = 5;
   const chartWidth = width - padding * 2;
   const chartHeight = height - padding * 2;
-
-  // Axis Component
-  const Axis = ({ points }) => (
-    <polyline fill="none" stroke="#ccc" strokeWidth=".5" points={points} />
-  );
 
   // Axis start: (padding, height - padding) Axis end: (width - padding, height - padding)
   const XAxis = () => (
