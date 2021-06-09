@@ -59,94 +59,98 @@ const CanvasLineChart = ({
   labels,
   data,
 }) => {
-  const [maximumXFromData, setMaximumXFromData] = React.useState(0);
-  const [maximumYFromData, setMaximumYFromData] = React.useState(0);
+  // const [maximumXFromData, setMaximumXFromData] = React.useState(0);
+  // const [maximumYFromData, setMaximumYFromData] = React.useState(0);
 
-  useEffect(() => {
-    if (data.length > 0) {
-      setMaximumXFromData(Math.max(...data.map(({ values }) => values.map((v) => v.x)).flat()));
-      setMaximumYFromData(Math.max(...data.map(({ values }) => values.map((v) => v.y)).flat()));
-    }
-  }, [data, labels]);
-
-  const drawHorizontalGuides = (ctx) => {
-    const startX = 0;
-    const endX = width;
-
-    // Generate an array of y-coordinates - the "height" of each horizontal line
-    const guideCoordinates = new Array(numberOfHorizontalGuides).fill(0).map((_, index) => {
-      const ratio = (index + 1) / numberOfHorizontalGuides;
-      const yCoordinate = height - height * ratio;
-
-      return yCoordinate;
-    });
-
-    // Styles
-    ctx.lineWidth = 0.5;
-    ctx.strokeStyle = colors.guides;
-
-    // Draw horizontal lines
-    ctx.beginPath();
-
-    guideCoordinates.forEach((coordinate) => {
-      ctx.moveTo(startX, coordinate);
-      ctx.lineTo(endX, coordinate);
-    });
-
-    // Finish the strokes
-    ctx.stroke();
-  };
-
-  const drawVerticalGuides = (ctx) => {
-    const guideCount = numberOfVerticalGuides || labels.length - 1;
-
-    const startY = 0;
-    const endY = height;
-
-    const guideCoordinates = new Array(numberOfHorizontalGuides).fill(0).map((_, index) => {
-      const ratio = (index + 1) / guideCount;
-      const xCoordinate = ratio * width;
-
-      return xCoordinate;
-    });
-
-    // Styles
-    ctx.lineWidth = 0.5;
-    ctx.strokeStyle = colors.guides;
-
-    guideCoordinates.forEach((coordinate) => {
-      ctx.beginPath();
-      ctx.moveTo(coordinate, startY);
-      ctx.lineTo(coordinate, endY);
-      ctx.stroke();
-    });
-  };
-
-  const drawDataSeries = (ctx, series) => {
-    const { color, values } = series;
-
-    // Styles
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = color;
-
-    // Begin drawing from the position of the first data point
-    ctx.moveTo(values[0].x, values[0].y);
-    ctx.beginPath();
-
-    // DRAW!
-    values.forEach((dataPoint) => {
-      const x = (dataPoint.x / maximumXFromData) * width;
-      const y = height - (dataPoint.y / maximumYFromData) * height;
-
-      ctx.lineTo(x, y);
-    });
-
-    // Finish the strokes
-    ctx.stroke();
-  };
+  // useEffect(() => {
+  //   console.log(maximumXFromData);
+  //   if (data.length > 0) {
+  //     setMaximumXFromData(Math.max(...data.map(({ values }) => values.map((v) => v.x)).flat()));
+  //     setMaximumYFromData(Math.max(...data.map(({ values }) => values.map((v) => v.y)).flat()));
+  //   }
+  // }, [data, labels]);
 
   // Main draw function
   const draw = (ctx, frameCount) => {
+    const maximumXFromData = Math.max(...data.map(({ values }) => values.map((v) => v.x)).flat());
+    const maximumYFromData = Math.max(...data.map(({ values }) => values.map((v) => v.y)).flat());
+
+    const drawHorizontalGuides = () => {
+      const startX = 0;
+      const endX = width;
+
+      // Generate an array of y-coordinates - the "height" of each horizontal line
+      const guideCoordinates = new Array(numberOfHorizontalGuides).fill(0).map((_, index) => {
+        const ratio = (index + 1) / numberOfHorizontalGuides;
+        const yCoordinate = height - height * ratio;
+
+        return yCoordinate;
+      });
+
+      // Styles
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = colors.guides;
+
+      // Draw horizontal lines
+      ctx.beginPath();
+
+      guideCoordinates.forEach((coordinate) => {
+        ctx.moveTo(startX, coordinate);
+        ctx.lineTo(endX, coordinate);
+      });
+
+      // Finish the strokes
+      ctx.stroke();
+    };
+
+    const drawVerticalGuides = () => {
+      const guideCount = numberOfVerticalGuides || labels.length - 1;
+
+      const startY = 0;
+      const endY = height;
+
+      const guideCoordinates = new Array(numberOfHorizontalGuides).fill(0).map((_, index) => {
+        const ratio = (index + 1) / guideCount;
+        const xCoordinate = ratio * width;
+
+        return xCoordinate;
+      });
+
+      // Styles
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = colors.guides;
+
+      guideCoordinates.forEach((coordinate) => {
+        ctx.beginPath();
+        ctx.moveTo(coordinate, startY);
+        ctx.lineTo(coordinate, endY);
+        ctx.stroke();
+      });
+    };
+
+    const drawDataSeries = (series) => {
+      const { color, values } = series;
+
+      // Styles
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = color;
+
+      // Begin drawing from the position of the first data point
+      ctx.moveTo(values[0].x, values[0].y);
+      ctx.beginPath();
+
+      // DRAW!
+      values.forEach((dataPoint) => {
+        const x = (dataPoint.x / maximumXFromData) * width;
+        const y = height - (dataPoint.y / maximumYFromData) * height;
+
+        ctx.lineTo(x, y);
+      });
+
+      // Finish the strokes
+      ctx.stroke();
+    };
+
     // Clear the old content of the canvas
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -157,14 +161,16 @@ const CanvasLineChart = ({
     // Check that we do in fact have data to draw
     if (maximumXFromData > 0) {
       // Create horizontal guides
-      drawHorizontalGuides(ctx);
+      drawHorizontalGuides();
       // Create vertical guides
-      drawVerticalGuides(ctx);
+      drawVerticalGuides();
 
       // Draw all data series
       data.forEach((series) => {
+        console.log('Drawing a series!');
+
         // Draw line graph
-        drawDataSeries(ctx, series);
+        drawDataSeries(series);
       });
     } else {
       ctx.textAlign = 'center';
