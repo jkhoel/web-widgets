@@ -154,16 +154,25 @@ const CanvasLineChart = ({
     ctx.fillStyle = colors.background;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    // Create horizontal guides
-    drawHorizontalGuides(ctx);
-    // Create vertical guides
-    drawVerticalGuides(ctx);
+    // Check that we do in fact have data to draw
+    if (maximumXFromData > 0) {
+      // Create horizontal guides
+      drawHorizontalGuides(ctx);
+      // Create vertical guides
+      drawVerticalGuides(ctx);
 
-    // Draw all data series
-    data.forEach((series) => {
-      // Draw line graph
-      drawDataSeries(ctx, series);
-    });
+      // Draw all data series
+      data.forEach((series) => {
+        // Draw line graph
+        drawDataSeries(ctx, series);
+      });
+    } else {
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = 'black';
+      ctx.font = '30px Verdana';
+      ctx.fillText('NO DATA', width / 2, height / 2);
+    }
 
     // Draw random stuff to show things actually animate
     ctx.fillStyle = colors.guides;
