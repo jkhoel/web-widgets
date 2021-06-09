@@ -3,11 +3,8 @@ import React from 'react';
 import './App.css';
 
 import CircularDial from './components/widgets/circular-dial';
-import DemoDial from './components/widgets/circular-dial/examples/DemoDial';
-import StatusDial from './components/widgets/circular-dial/examples/StatusDial';
-import ClockDial from './components/widgets/circular-dial/examples/ClockDial';
-
-import DemoChart from './components/widgets/chart/examples/DemoChart';
+import StatusDial from './components/widgets/circular-dial/StatusDial';
+import ClockDial from './components/widgets/circular-dial/ClockDial';
 
 // Main App
 function App() {
@@ -15,11 +12,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <DemoChart />
-      </header>
-      <header className="App-header">
         <CircularDial value={33} color="hotpink" />
-        <DemoDial step={2} />
         <StatusDial />
         <ClockDial />
       </header>
