@@ -176,6 +176,7 @@ const CanvasLineChart = ({
 };
 
 CanvasLineChart.defaultProps = {
+  labels: [],
   height: 200,
   width: 500,
   horizontalGuides: 4,
@@ -190,7 +191,7 @@ CanvasLineChart.defaultProps = {
 };
 
 CanvasLineChart.propTypes = {
-  labels: PropTypes.arrayOf(PropTypes.string).isRequired,
+  labels: PropTypes.arrayOf(PropTypes.string),
   height: PropTypes.number,
   width: PropTypes.number,
   horizontalGuides: PropTypes.number,
