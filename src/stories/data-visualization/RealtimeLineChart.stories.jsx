@@ -12,10 +12,10 @@ const colors = {
 export default {
   title: 'Widgets/Charts/Realtime Line-Chart Demo',
   component: RealtimeLineChart,
-  argTypes: { maxValue: 100, minValue: 0, timestep: 1000, colors },
+  argTypes: { viewThreshold: 100, maxValue: 100, minValue: 0, timestep: 1000, colors },
 };
 
 const Template = (args) => <RealtimeLineChart {...args} />;
 
 export const Default = Template.bind({});
-Default.args = { colors, maxValue: 100, minValue: 0, timestep: 1000 };
+Default.args = { colors, viewThreshold: 100, maxValue: 100, minValue: 0, timestep: 1000 };

@@ -43,10 +43,10 @@ const colors = {
 export default {
   title: 'Widgets/Charts/Canvas Line-Chart',
   component: CanvasLineChart,
-  argTypes: { height: 200, width: 500, colors, labels, data },
+  argTypes: { height: 200, width: 500, viewThreshold: 100, colors, labels, data },
 };
 
 const Template = (args) => <CanvasLineChart {...args} />;
 
 export const Default = Template.bind({});
-Default.args = { height: 200, width: 500, colors, labels, data };
+Default.args = { height: 200, width: 500, viewThreshold: 100, colors, labels, data };

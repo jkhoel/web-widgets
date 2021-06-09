@@ -35,20 +35,39 @@ import CanvasLineChart from '../CanvasLineChart';
 const data = [
   {
     legend: 'series1',
-    color: 'red',
+    color: 'hotpink',
+    values: [],
+  },
+  {
+    legend: 'series2',
+    color: 'cyan',
     values: [],
   },
 ];
 
-const RealtimeLineChart = ({ colors, maxValue, minValue, timestep }) => {
+// const CHART_THRESHOLD = 10;
+
+const RealtimeLineChart = ({ colors, maxValue, minValue, timestep, viewThreshold }) => {
   const chartDataReducer = (chartData, action) => {
-    const x = action.lastX > 0 ? action.lastX : 0;
-    const y = Math.floor(Math.random() * (maxValue - minValue + 1) + minValue);
+    const x = chartData[0].values.length;
 
     switch (action.type) {
       case 'add':
-        // console.log({ x, y }, chartData);
-        chartData[0].values.push({ x, y });
+        // Add the new point to the end of each series and return the new chart data
+        chartData.forEach((series) => {
+          const y = Math.floor(Math.random() * (maxValue - minValue + 1) + minValue);
+          series.values.push({ x, y });
+        });
+        return chartData;
+      case 'remove-first':
+        // Remove first data-point from each series
+        chartData.forEach((series) => {
+          series.values.shift();
+        });
+        // chartData[0].values.shift();
+        // Re-index the dataset
+
+        // Return the result
         return chartData;
       default:
         throw new Error();
@@ -59,18 +78,27 @@ const RealtimeLineChart = ({ colors, maxValue, minValue, timestep }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Find last X value, and add a new point to the series. TODO: Add support for creating multiple series
-      const lastX = Math.max(...data.map(({ values }) => values.map((v) => v.x)).flat());
-      dispatchChartData({ type: 'add', lastX });
+      dispatchChartData({ type: 'add' });
+      // if (chartData[0].values.length > CHART_THRESHOLD) dispatchChartData({ type: 'remove-first' });
     }, timestep);
 
     return () => clearInterval(interval);
   });
 
-  return <CanvasLineChart data={chartData} labels={[]} colors={colors} height={200} width={500} />;
+  return (
+    <CanvasLineChart
+      data={chartData}
+      labels={[]}
+      colors={colors}
+      height={200}
+      width={500}
+      viewThreshold={viewThreshold}
+    />
+  );
 };
 
 RealtimeLineChart.propTypes = {
+  viewThreshold: PropTypes.number,
   maxValue: PropTypes.number,
   minValue: PropTypes.number,
   timestep: PropTypes.number,
@@ -86,6 +114,7 @@ RealtimeLineChart.propTypes = {
 };
 
 RealtimeLineChart.defaultProps = {
+  viewThreshold: null,
   maxValue: 100,
   minValue: 0,
   timestep: 1000,

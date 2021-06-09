@@ -56,24 +56,14 @@ const CanvasLineChart = ({
   colors,
   horizontalGuides: numberOfHorizontalGuides,
   verticalGuides: numberOfVerticalGuides,
+  viewThreshold,
   labels,
   data,
 }) => {
-  // const [maximumXFromData, setMaximumXFromData] = React.useState(0);
-  // const [maximumYFromData, setMaximumYFromData] = React.useState(0);
-
-  // useEffect(() => {
-  //   console.log(maximumXFromData);
-  //   if (data.length > 0) {
-  //     setMaximumXFromData(Math.max(...data.map(({ values }) => values.map((v) => v.x)).flat()));
-  //     setMaximumYFromData(Math.max(...data.map(({ values }) => values.map((v) => v.y)).flat()));
-  //   }
-  // }, [data, labels]);
-
   // Main draw function
   const draw = (ctx, frameCount) => {
-    const maximumXFromData = Math.max(...data.map(({ values }) => values.map((v) => v.x)).flat());
-    const maximumYFromData = Math.max(...data.map(({ values }) => values.map((v) => v.y)).flat());
+    // const maximumXFromData = Math.max(...data.map(({ values }) => values.map((v) => v.x)).flat());
+    // const maximumYFromData = Math.max(...data.map(({ values }) => values.map((v) => v.y)).flat());
 
     const drawHorizontalGuides = () => {
       const startX = 0;
@@ -131,6 +121,9 @@ const CanvasLineChart = ({
     const drawDataSeries = (series) => {
       const { color, values } = series;
 
+      const maximumXFromData = Math.max(...data.map((s) => s.values.map((v) => v.x)).flat());
+      const maximumYFromData = Math.max(...data.map((s) => s.values.map((v) => v.y)).flat());
+
       // Styles
       ctx.lineWidth = 1;
       ctx.strokeStyle = color;
@@ -151,6 +144,26 @@ const CanvasLineChart = ({
       ctx.stroke();
     };
 
+    const filterDataOnViewThreshold = (threshold = 10) => {
+      return data.map((series) => {
+        const length = series.values.length || 0;
+        // If a view threshold was set, only show an this amount of data points
+        if (threshold && length > threshold) {
+          // Slice the values and get the returned array
+          const values = series.values.slice(length - threshold, length);
+          // Re-index X-values to cover the whole chart
+          values.forEach((point, index) => {
+            point.x = index;
+          });
+          // Return the sliced and re-indexed data-set
+          return { ...series, values };
+        }
+
+        // No threshold, or threshold not met - return the series as-is
+        return series;
+      });
+    };
+
     // Clear the old content of the canvas
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -159,17 +172,17 @@ const CanvasLineChart = ({
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     // Check that we do in fact have data to draw
-    if (maximumXFromData > 0) {
+    if (data[0].values.length > 0) {
       // Create horizontal guides
       drawHorizontalGuides();
       // Create vertical guides
       drawVerticalGuides();
 
-      // Draw all data series
-      data.forEach((series) => {
-        console.log('Drawing a series!');
+      // Filtering of dataset
+      const filteredData = filterDataOnViewThreshold(viewThreshold);
 
-        // Draw line graph
+      // Draw all data series
+      filteredData.forEach((series) => {
         drawDataSeries(series);
       });
     } else {
@@ -191,6 +204,7 @@ const CanvasLineChart = ({
 };
 
 CanvasLineChart.defaultProps = {
+  viewThreshold: null,
   labels: [],
   height: 200,
   width: 500,
@@ -206,6 +220,7 @@ CanvasLineChart.defaultProps = {
 };
 
 CanvasLineChart.propTypes = {
+  viewThreshold: PropTypes.number,
   labels: PropTypes.arrayOf(PropTypes.string),
   height: PropTypes.number,
   width: PropTypes.number,
